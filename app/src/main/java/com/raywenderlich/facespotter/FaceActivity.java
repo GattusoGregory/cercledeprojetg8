@@ -62,278 +62,288 @@ import com.google.android.gms.vision.face.FaceDetector;
 import com.raywenderlich.facespotter.ui.camera.CameraSourcePreview;
 import com.raywenderlich.facespotter.ui.camera.GraphicOverlay;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public final class FaceActivity extends AppCompatActivity {
-  private ListView mDrawerList;
-  private ArrayAdapter<String> mAdapter;
-  private static final String TAG = "FaceActivity";
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
+    private static final String TAG = "FaceActivity";
 
-  private static final int RC_HANDLE_GMS = 9001;
-  // permission request codes need to be < 256
-  private static final int RC_HANDLE_CAMERA_PERM = 255;
+    private static final int RC_HANDLE_GMS = 9001;
+    // permission request codes need to be < 256
+    private static final int RC_HANDLE_CAMERA_PERM = 255;
 
-  private CameraSource mCameraSource = null;
-  private CameraSourcePreview mPreview;
-  private GraphicOverlay mGraphicOverlay;
-  private boolean mIsFrontFacing = true;
+    private CameraSource mCameraSource = null;
+    private CameraSourcePreview mPreview;
+    private GraphicOverlay mGraphicOverlay;
+    private boolean mIsFrontFacing = true;
 
 
-  // Activity event handlers
-  // =======================
+    // Activity event handlers
+    // =======================
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    Log.d(TAG, "onCreate called.");
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate called.");
 
-    setContentView(R.layout.activity_face);
+        setContentView(R.layout.activity_face);
 
-    // Nav Drawer
-    mDrawerList = (ListView)findViewById(R.id.navList);
-    //
-    mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-    mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
-    final ImageButton button = (ImageButton) findViewById(R.id.flipButton);
-    button.setOnClickListener(mSwitchCameraButtonListener);
+        // Nav Drawer
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        //
+        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
+        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
+        final ImageButton button = (ImageButton) findViewById(R.id.flipButton);
+        button.setOnClickListener(mSwitchCameraButtonListener);
 
-    if (savedInstanceState != null) {
-      mIsFrontFacing = savedInstanceState.getBoolean("IsFrontFacing");
+        if (savedInstanceState != null) {
+            mIsFrontFacing = savedInstanceState.getBoolean("IsFrontFacing");
+        }
+
+        // Start using the camera if permission has been granted to this app,
+        // otherwise ask for permission to use it.
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            createCameraSource();
+        } else {
+            requestCameraPermission();
+        }
+
+        addDrawerItems();
     }
 
-    // Start using the camera if permission has been granted to this app,
-    // otherwise ask for permission to use it.
-    int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-    if (rc == PackageManager.PERMISSION_GRANTED) {
-      createCameraSource();
-    } else {
-      requestCameraPermission();
+    private void addDrawerItems() {
+        String[] osArray = {"switch_cameras.png"};
+        ArrayList<String> items =
+                new ArrayList<String>(Arrays.asList("Editeur"));
+
+        Field[] drawables = android.R.drawable.class.getFields();
+        for (Field f : drawables) {
+            try {
+                items.add("R.drawable." + f.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        mDrawerList.setAdapter(mAdapter);
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(FaceActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
-    addDrawerItems();
-  }
+    private View.OnClickListener mSwitchCameraButtonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            mIsFrontFacing = !mIsFrontFacing;
 
-  private void addDrawerItems()
-  {
-    String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
-    mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-    mDrawerList.setAdapter(mAdapter);
-    mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-    {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-      {
-          Toast.makeText(FaceActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
-      }
+            if (mCameraSource != null) {
+                mCameraSource.release();
+                mCameraSource = null;
+            }
 
-    });
-  }
-
-
-
-  private View.OnClickListener mSwitchCameraButtonListener = new View.OnClickListener() {
-    public void onClick(View v) {
-      mIsFrontFacing = !mIsFrontFacing;
-
-      if (mCameraSource != null) {
-        mCameraSource.release();
-        mCameraSource = null;
-      }
-
-      createCameraSource();
-      startCameraSource();
-    }
-  };
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    Log.d(TAG, "onResume called.");
-
-    startCameraSource();
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-
-    mPreview.stop();
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle savedInstanceState) {
-    super.onSaveInstanceState(savedInstanceState);
-    savedInstanceState.putBoolean("IsFrontFacing", mIsFrontFacing);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-
-    if (mCameraSource != null) {
-      mCameraSource.release();
-    }
-  }
-
-  // Handle camera permission requests
-  // =================================
-
-  private void requestCameraPermission() {
-    Log.w(TAG, "Camera permission not acquired. Requesting permission.");
-
-    final String[] permissions = new String[]{Manifest.permission.CAMERA};
-    if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-      Manifest.permission.CAMERA)) {
-      ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
-      return;
-    }
-
-    final Activity thisActivity = this;
-    View.OnClickListener listener = new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
-      }
-    };
-    Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
-      Snackbar.LENGTH_INDEFINITE)
-      .setAction(R.string.ok, listener)
-      .show();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                         @NonNull int[] grantResults) {
-    if (requestCode != RC_HANDLE_CAMERA_PERM) {
-      Log.d(TAG, "Got unexpected permission result: " + requestCode);
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-      return;
-    }
-
-    if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      // We have permission to access the camera, so create the camera source.
-      Log.d(TAG, "Camera permission granted - initializing camera source.");
-      createCameraSource();
-      return;
-    }
-
-    // If we've reached this part of the method, it means that the user hasn't granted the app
-    // access to the camera. Notify the user and exit.
-    Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
-      " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
-    DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-      public void onClick(DialogInterface dialog, int id) {
-        finish();
-      }
-    };
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle(R.string.app_name)
-      .setMessage(R.string.no_camera_permission)
-      .setPositiveButton(R.string.disappointed_ok, listener)
-      .show();
-  }
-
-  // Camera source
-  // =============
-
-  private void createCameraSource() {
-    Log.d(TAG, "createCameraSource called.");
-
-    // 1
-    Context context = getApplicationContext();
-    FaceDetector detector = createFaceDetector(context);
-
-    // 2
-    int facing = CameraSource.CAMERA_FACING_FRONT;
-    if (!mIsFrontFacing) {
-      facing = CameraSource.CAMERA_FACING_BACK;
-    }
-
-    // 3
-    mCameraSource = new CameraSource.Builder(context, detector)
-      .setFacing(facing)
-      .setRequestedPreviewSize(320, 240)
-      .setRequestedFps(60.0f)
-      .setAutoFocusEnabled(true)
-      .build();
-  }
-
-  private void startCameraSource() {
-    Log.d(TAG, "startCameraSource called.");
-
-    // Make sure that the device has Google Play services available.
-    int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-      getApplicationContext());
-    if (code != ConnectionResult.SUCCESS) {
-      Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
-      dlg.show();
-    }
-
-    if (mCameraSource != null) {
-      try {
-        mPreview.start(mCameraSource, mGraphicOverlay);
-      } catch (IOException e) {
-        Log.e(TAG, "Unable to start camera source.", e);
-        mCameraSource.release();
-        mCameraSource = null;
-      }
-    }
-  }
-
-  // Face detector
-  // =============
-
-  /**
-   *  Create the face detector, and check if it's ready for use.
-   */
-  @NonNull
-  private FaceDetector createFaceDetector(final Context context) {
-    Log.d(TAG, "createFaceDetector called.");
-
-    FaceDetector detector = new FaceDetector.Builder(context)
-      .setLandmarkType(FaceDetector.ALL_LANDMARKS)
-      .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
-      .setTrackingEnabled(true) // ID MAMENE
-      .setMode(FaceDetector.FAST_MODE)
-      .setProminentFaceOnly(mIsFrontFacing)
-      .setMinFaceSize(mIsFrontFacing ? 0.35f : 0.15f)
-      .build();
-
-    MultiProcessor.Factory<Face> factory = new MultiProcessor.Factory<Face>() {
-      @Override
-      public Tracker<Face> create(Face face) {
-        return new FaceTracker(mGraphicOverlay, context, mIsFrontFacing);
-      }
+            createCameraSource();
+            startCameraSource();
+        }
     };
 
-    Detector.Processor<Face> processor = new MultiProcessor.Builder<>(factory).build();
-    detector.setProcessor(processor);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume called.");
 
-    if (!detector.isOperational()) {
-      Log.w(TAG, "Face detector dependencies are not yet available.");
+        startCameraSource();
+    }
 
-      // Check the device's storage.  If there's little available storage, the native
-      // face detection library will not be downloaded, and the app won't work,
-      // so notify the user.
-      IntentFilter lowStorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
-      boolean hasLowStorage = registerReceiver(null, lowStorageFilter) != null;
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-      if (hasLowStorage) {
-        Log.w(TAG, getString(R.string.low_storage_error));
+        mPreview.stop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("IsFrontFacing", mIsFrontFacing);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mCameraSource != null) {
+            mCameraSource.release();
+        }
+    }
+
+    // Handle camera permission requests
+    // =================================
+
+    private void requestCameraPermission() {
+        Log.w(TAG, "Camera permission not acquired. Requesting permission.");
+
+        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            return;
+        }
+
+        final Activity thisActivity = this;
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
+            }
+        };
+        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.ok, listener)
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != RC_HANDLE_CAMERA_PERM) {
+            Log.d(TAG, "Got unexpected permission result: " + requestCode);
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // We have permission to access the camera, so create the camera source.
+            Log.d(TAG, "Camera permission granted - initializing camera source.");
+            createCameraSource();
+            return;
+        }
+
+        // If we've reached this part of the method, it means that the user hasn't granted the app
+        // access to the camera. Notify the user and exit.
+        Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
+                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int id) {
-            finish();
-          }
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.app_name)
-          .setMessage(R.string.low_storage_error)
-          .setPositiveButton(R.string.disappointed_ok, listener)
-          .show();
-      }
+                .setMessage(R.string.no_camera_permission)
+                .setPositiveButton(R.string.disappointed_ok, listener)
+                .show();
     }
-    return detector;
-  }
+
+    // Camera source
+    // =============
+
+    private void createCameraSource() {
+        Log.d(TAG, "createCameraSource called.");
+
+        // 1
+        Context context = getApplicationContext();
+        FaceDetector detector = createFaceDetector(context);
+
+        // 2
+        int facing = CameraSource.CAMERA_FACING_FRONT;
+        if (!mIsFrontFacing) {
+            facing = CameraSource.CAMERA_FACING_BACK;
+        }
+
+        // 3
+        mCameraSource = new CameraSource.Builder(context, detector)
+                .setFacing(facing)
+                .setRequestedPreviewSize(320, 240)
+                .setRequestedFps(60.0f)
+                .setAutoFocusEnabled(true)
+                .build();
+    }
+
+    private void startCameraSource() {
+        Log.d(TAG, "startCameraSource called.");
+
+        // Make sure that the device has Google Play services available.
+        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
+                getApplicationContext());
+        if (code != ConnectionResult.SUCCESS) {
+            Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
+            dlg.show();
+        }
+
+        if (mCameraSource != null) {
+            try {
+                mPreview.start(mCameraSource, mGraphicOverlay);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to start camera source.", e);
+                mCameraSource.release();
+                mCameraSource = null;
+            }
+        }
+    }
+
+    // Face detector
+    // =============
+
+    /**
+     * Create the face detector, and check if it's ready for use.
+     */
+    @NonNull
+    private FaceDetector createFaceDetector(final Context context) {
+        Log.d(TAG, "createFaceDetector called.");
+
+        FaceDetector detector = new FaceDetector.Builder(context)
+                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .setTrackingEnabled(true) // ID MAMENE
+                .setMode(FaceDetector.FAST_MODE)
+                .setProminentFaceOnly(mIsFrontFacing)
+                .setMinFaceSize(mIsFrontFacing ? 0.35f : 0.15f)
+                .build();
+
+        MultiProcessor.Factory<Face> factory = new MultiProcessor.Factory<Face>() {
+            @Override
+            public Tracker<Face> create(Face face) {
+                return new FaceTracker(mGraphicOverlay, context, mIsFrontFacing);
+            }
+        };
+
+        Detector.Processor<Face> processor = new MultiProcessor.Builder<>(factory).build();
+        detector.setProcessor(processor);
+
+        if (!detector.isOperational()) {
+            Log.w(TAG, "Face detector dependencies are not yet available.");
+
+            // Check the device's storage.  If there's little available storage, the native
+            // face detection library will not be downloaded, and the app won't work,
+            // so notify the user.
+            IntentFilter lowStorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
+            boolean hasLowStorage = registerReceiver(null, lowStorageFilter) != null;
+
+            if (hasLowStorage) {
+                Log.w(TAG, getString(R.string.low_storage_error));
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.app_name)
+                        .setMessage(R.string.low_storage_error)
+                        .setPositiveButton(R.string.disappointed_ok, listener)
+                        .show();
+            }
+        }
+        return detector;
+    }
 
 }
