@@ -119,14 +119,15 @@ public final class FaceActivity extends AppCompatActivity {
     }
 
     private void addDrawerItems() {
-        String[] osArray = {"switch_cameras.png"};
-        ArrayList<String> items =
-                new ArrayList<String>(Arrays.asList("Editeur"));
+        ArrayList<String> items = new ArrayList<String>(Arrays.asList("Editeur"));
+        Field[] drawables = R.drawable.class.getFields();
 
-        Field[] drawables = android.R.drawable.class.getFields();
         for (Field f : drawables) {
             try {
-                items.add("R.drawable." + f.getName());
+                if(f.getName().contains("image")){
+                    items.add(f.getName());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

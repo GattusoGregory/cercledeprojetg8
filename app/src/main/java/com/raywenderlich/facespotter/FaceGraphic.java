@@ -33,7 +33,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.gms.vision.face.Face;
@@ -89,8 +88,11 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
         mMustacheGraphic.draw(canvas);
     }
-  private void initializeGraphics(Resources resources) {
-    mMustacheGraphic = resources.getDrawable(R.drawable.zombie01);
+  public void initializeGraphics(Resources resources, String nom) {
+      if(nom == null){
+          nom = "image_zombie01";
+      }
+      mMustacheGraphic = resources.getDrawable(R.drawable.nom);
   }
 
   private void initializePaints(Resources resources) {
