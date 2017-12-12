@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/cercledeprojetg8.iml" filepath="$PROJECT_DIR$/cercledeprojetg8.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FaceSpotter-starter.iml" filepath="$PROJECT_DIR$/FaceSpotter-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
