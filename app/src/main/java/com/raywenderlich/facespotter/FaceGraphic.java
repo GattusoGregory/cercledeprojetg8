@@ -40,7 +40,7 @@ import com.google.android.gms.vision.face.Face;
 import com.raywenderlich.facespotter.ui.camera.GraphicOverlay;
 
 
-class FaceGraphic extends GraphicOverlay.Graphic {
+public class FaceGraphic extends GraphicOverlay.Graphic {
 
   private static final String TAG = "FaceGraphic";
   private volatile Face mFace;

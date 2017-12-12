@@ -41,7 +41,7 @@ import com.raywenderlich.facespotter.ui.camera.GraphicOverlay;
 import java.util.HashMap;
 import java.util.Map;
 
-class FaceTracker extends Tracker<Face> {
+public class FaceTracker extends Tracker<Face> {
 
   private static final String TAG = "FaceTracker";
 
