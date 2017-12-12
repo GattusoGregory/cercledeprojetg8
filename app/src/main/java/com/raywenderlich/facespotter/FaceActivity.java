@@ -90,11 +90,6 @@ public final class FaceActivity extends AppCompatActivity {
 
     // Nav Drawer
     mDrawerList = (ListView)findViewById(R.id.navList);
-    private void addDrawerItems() {
-      String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
-      mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-      mDrawerList.setAdapter(mAdapter);
-    }
     //
     mPreview = (CameraSourcePreview) findViewById(R.id.preview);
     mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
@@ -113,6 +108,12 @@ public final class FaceActivity extends AppCompatActivity {
     } else {
       requestCameraPermission();
     }
+  }
+
+  private void addDrawerItems() {
+    String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
+    mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+    mDrawerList.setAdapter(mAdapter);
   }
 
   private View.OnClickListener mSwitchCameraButtonListener = new View.OnClickListener() {
