@@ -71,7 +71,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     mIsFrontFacing = isFrontFacing;
     Resources resources = context.getResources();
     initializePaints(resources);
-    initializeGraphics(resources);
+    initializeGraphics(resources , "image_mask02.png", context);
   }
     private void drawMustache(Canvas canvas,
                               float left1,
@@ -88,11 +88,29 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         }
         mMustacheGraphic.draw(canvas);
     }
-  public void initializeGraphics(Resources resources, String nom) {
-      if(nom == null){
+  public void initializeGraphics(Resources resources, String nom, Context context)
+  {
+      if(nom == null)
+      {
           nom = "image_zombie01";
       }
-      mMustacheGraphic = resources.getDrawable(R.drawable.nom);
+      final int ResourceID = getResourceID(nom, "drawable", context);
+      mMustacheGraphic = resources.getDrawable(ResourceID);
+  }
+
+  protected final static int getResourceID(final String resName, final String resType, final Context ctx)
+  {
+    final int ResourceID =
+            ctx.getResources().getIdentifier(resName, resType,
+                    ctx.getApplicationInfo().packageName);
+    if (ResourceID == 0)
+    {
+        throw new IllegalArgumentException("No resource string found with name " + resName);
+    }
+    else
+    {
+        return ResourceID;
+    }
   }
 
   private void initializePaints(Resources resources) {
