@@ -43,7 +43,7 @@ import com.raywenderlich.facespotter.ui.camera.GraphicOverlay;
 class FaceGraphic extends GraphicOverlay.Graphic {
 
   private static final String TAG = "FaceGraphic";
-
+  private volatile Face mFace;
   private static final float DOT_RADIUS = 3.0f;
   private static final float TEXT_OFFSET_Y = -30.0f;
 
@@ -74,12 +74,23 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     initializePaints(resources);
     initializeGraphics(resources);
   }
+    private void drawMustache(Canvas canvas,
+                              float left1,
+                              float top1, float right1, float bottom1) {
+        int left = (int)left1;
+        int top = (int)top1;
+        int right = (int)right1;
+        int bottom = (int)bottom1;
 
+        if (mIsFrontFacing) {
+            mMustacheGraphic.setBounds(left, top, right, bottom);
+        } else {
+            mMustacheGraphic.setBounds(right, top, left, bottom);
+        }
+        mMustacheGraphic.draw(canvas);
+    }
   private void initializeGraphics(Resources resources) {
-    mPigNoseGraphic = resources.getDrawable(R.drawable.pig_nose_emoji);
-    mMustacheGraphic = resources.getDrawable(R.drawable.mustache);
-    mHappyStarGraphic = resources.getDrawable(R.drawable.happy_star);
-    mHatGraphic = resources.getDrawable(R.drawable.red_hat);
+    mMustacheGraphic = resources.getDrawable(R.drawable.zombie01);
   }
 
   private void initializePaints(Resources resources) {
@@ -110,68 +121,36 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     mEyelidPaint.setStyle(Paint.Style.FILL);
   }
 
-  void update(FaceData faceData) {
-    mFaceData = faceData;
-    postInvalidate(); // Trigger a redraw of the graphic (i.e. cause draw() to be called).
-  }
-
-  @Override
-  public void draw(Canvas canvas) {
-    final float DOT_RADIUS = 3.0f;
-    final float TEXT_OFFSET_Y = -30.0f;
-
-    // Confirm that the face and its features are still visible before drawing any graphics over it.
-    if (mFaceData == null) {
-      return;
-    }
-
     // 1
-    PointF detectPosition = mFaceData.getPosition();
-    PointF detectLeftEyePosition = mFaceData.getLeftEyePosition();
-    PointF detectRightEyePosition = mFaceData.getRightEyePosition();
-    PointF detectNoseBasePosition = mFaceData.getNoseBasePosition();
-    PointF detectMouthLeftPosition = mFaceData.getMouthLeftPosition();
-    PointF detectMouthBottomPosition = mFaceData.getMouthBottomPosition();
-    PointF detectMouthRightPosition = mFaceData.getMouthRightPosition();
-    if ((detectPosition == null) ||
-            (detectLeftEyePosition == null) ||
-            (detectRightEyePosition == null) ||
-            (detectNoseBasePosition == null) ||
-            (detectMouthLeftPosition == null) ||
-            (detectMouthBottomPosition == null) ||
-            (detectMouthRightPosition == null)) {
-      return;
+    void update(Face face) {
+        mFace = face;
+        postInvalidate(); // Trigger a redraw of the graphic (i.e. cause draw() to be called).
     }
 
-    // 2
-    float leftEyeX = translateX(detectLeftEyePosition.x);
-    float leftEyeY = translateY(detectLeftEyePosition.y);
-    canvas.drawCircle(leftEyeX, leftEyeY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("left eye", leftEyeX, leftEyeY + TEXT_OFFSET_Y, mHintTextPaint);
+    @Override
+    public void draw(Canvas canvas) {
+        // 2
+        // Confirm that the face and its features are still visible
+        // before drawing any graphics over it.
+        Face face = mFace;
+        if (face == null) {
+            return;
+        }
 
-    float rightEyeX = translateX(detectRightEyePosition.x);
-    float rightEyeY = translateY(detectRightEyePosition.y);
-    canvas.drawCircle(rightEyeX, rightEyeY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("right eye", rightEyeX, rightEyeY + TEXT_OFFSET_Y, mHintTextPaint);
+        // 3
+        float centerX = translateX(face.getPosition().x + face.getWidth() / 2.0f);
+        float centerY = translateY(face.getPosition().y + face.getHeight() / 2.0f);
+        float offsetX = scaleX(face.getWidth() / 2.0f);
+        float offsetY = scaleY(face.getHeight() / 2.0f);
 
-    float noseBaseX = translateX(detectNoseBasePosition.x);
-    float noseBaseY = translateY(detectNoseBasePosition.y);
-    canvas.drawCircle(noseBaseX, noseBaseY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("nose base", noseBaseX, noseBaseY + TEXT_OFFSET_Y, mHintTextPaint);
+        // 4
+        // Draw a box around the face.
+        float left = centerX - offsetX;
+        float right = centerX + offsetX;
+        float top = centerY - offsetY;
+        float bottom = centerY + offsetY;
 
-    float mouthLeftX = translateX(detectMouthLeftPosition.x);
-    float mouthLeftY = translateY(detectMouthLeftPosition.y);
-    canvas.drawCircle(mouthLeftX, mouthLeftY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("mouth left", mouthLeftX, mouthLeftY + TEXT_OFFSET_Y, mHintTextPaint);
-
-    float mouthRightX = translateX(detectMouthRightPosition.x);
-    float mouthRightY = translateY(detectMouthRightPosition.y);
-    canvas.drawCircle(mouthRightX, mouthRightY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("mouth right", mouthRightX, mouthRightY + TEXT_OFFSET_Y, mHintTextPaint);
-
-    float mouthBottomX = translateX(detectMouthBottomPosition.x);
-    float mouthBottomY = translateY(detectMouthBottomPosition.y);
-    canvas.drawCircle(mouthBottomX, mouthBottomY, DOT_RADIUS, mHintOutlinePaint);
-    canvas.drawText("mouth bottom", mouthBottomX, mouthBottomY + TEXT_OFFSET_Y, mHintTextPaint);
-  }
+        // 5
+        drawMustache(canvas, left, top, right, bottom);
+    }
 }
