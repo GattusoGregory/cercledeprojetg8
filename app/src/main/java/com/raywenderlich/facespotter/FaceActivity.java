@@ -83,6 +83,8 @@ public final class FaceActivity extends AppCompatActivity {
     private GraphicOverlay mGraphicOverlay;
     private boolean mIsFrontFacing = true;
 
+    public String maskName = "image_zombie01";
+
 
     // Activity event handlers
     // =======================
@@ -134,10 +136,12 @@ public final class FaceActivity extends AppCompatActivity {
         }
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         mDrawerList.setAdapter(mAdapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(FaceActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+                String test = getResources().getResourceEntryName((int)id);
+                Toast.makeText(FaceActivity.this, "test", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -314,7 +318,7 @@ public final class FaceActivity extends AppCompatActivity {
         MultiProcessor.Factory<Face> factory = new MultiProcessor.Factory<Face>() {
             @Override
             public Tracker<Face> create(Face face) {
-                return new FaceTracker(mGraphicOverlay, context, mIsFrontFacing);
+                return new FaceTracker(mGraphicOverlay, context, mIsFrontFacing, maskName);
             }
         };
 

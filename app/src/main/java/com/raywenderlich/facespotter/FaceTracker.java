@@ -51,22 +51,25 @@ class FaceTracker extends Tracker<Face> {
   private FaceGraphic mFaceGraphic;
   private FaceData mFaceData;
 
+  private String mMaskName;
+
   // Subjects may move too quickly to for the system to detect their detect features,
   // or they may move so their features are out of the tracker's detection range.
   // This map keeps track of previously detected facial landmarks so that we can approximate
   // their locations when they momentarily "disappear".
   private Map<Integer, PointF> mPreviousLandmarkPositions = new HashMap<>();
 
-  FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing) {
+  FaceTracker(GraphicOverlay overlay, Context context, boolean isFrontFacing,String maskName) {
     mOverlay = overlay;
     mContext = context;
     mIsFrontFacing = isFrontFacing;
     mFaceData = new FaceData();
+    mMaskName = maskName;
   }
   // 1
   @Override
   public void onNewItem(int id, Face face) {
-    mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing);
+    mFaceGraphic = new FaceGraphic(mOverlay, mContext, mIsFrontFacing, mMaskName);
   }
 
   // 2

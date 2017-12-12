@@ -65,52 +65,41 @@ class FaceGraphic extends GraphicOverlay.Graphic {
   private Drawable mHappyStarGraphic;
   private Drawable mHatGraphic;
 
+  private String mMaskName = "image_zombie01";
 
-  FaceGraphic(GraphicOverlay overlay, Context context, boolean isFrontFacing) {
+
+  FaceGraphic(GraphicOverlay overlay, Context context, boolean isFrontFacing, String maskName)
+  {
     super(overlay);
     mIsFrontFacing = isFrontFacing;
     Resources resources = context.getResources();
     initializePaints(resources);
-    initializeGraphics(resources , "image_mask02.png", context);
+    this.mMaskName = maskName;
+    initializeGraphics(context, this.mMaskName);
   }
-    private void drawMustache(Canvas canvas,
-                              float left1,
-                              float top1, float right1, float bottom1) {
-        int left = (int)left1;
-        int top = (int)top1;
-        int right = (int)right1;
-        int bottom = (int)bottom1;
 
-        if (mIsFrontFacing) {
-            mMustacheGraphic.setBounds(left, top, right, bottom);
-        } else {
-            mMustacheGraphic.setBounds(right, top, left, bottom);
-        }
-        mMustacheGraphic.draw(canvas);
-    }
-  public void initializeGraphics(Resources resources, String nom, Context context)
+  private void drawMustache(Canvas canvas, float left1, float top1, float right1, float bottom1)
   {
-      if(nom == null)
+      int left = (int)left1;
+      int top = (int)top1;
+      int right = (int)right1;
+      int bottom = (int)bottom1;
+
+      if (mIsFrontFacing)
       {
-          nom = "image_zombie01";
+          mMustacheGraphic.setBounds(left, top, right, bottom);
       }
-      final int ResourceID = getResourceID(nom, "drawable", context);
-      mMustacheGraphic = resources.getDrawable(ResourceID);
+      else
+      {
+          mMustacheGraphic.setBounds(right, top, left, bottom);
+      }
+      mMustacheGraphic.draw(canvas);
   }
 
-  protected final static int getResourceID(final String resName, final String resType, final Context ctx)
+  public void initializeGraphics(Context context,String nom )
   {
-    final int ResourceID =
-            ctx.getResources().getIdentifier(resName, resType,
-                    ctx.getApplicationInfo().packageName);
-    if (ResourceID == 0)
-    {
-        throw new IllegalArgumentException("No resource string found with name " + resName);
-    }
-    else
-    {
-        return ResourceID;
-    }
+      int drawableResourceId = context.getResources().getIdentifier(nom, "drawable", context.getPackageName());
+      mMustacheGraphic = context.getResources().getDrawable(drawableResourceId);
   }
 
   private void initializePaints(Resources resources) {
