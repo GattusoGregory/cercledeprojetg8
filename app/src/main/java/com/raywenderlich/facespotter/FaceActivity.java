@@ -45,9 +45,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -108,13 +110,27 @@ public final class FaceActivity extends AppCompatActivity {
     } else {
       requestCameraPermission();
     }
+
+    addDrawerItems();
   }
 
-  private void addDrawerItems() {
+  private void addDrawerItems()
+  {
     String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
     mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
     mDrawerList.setAdapter(mAdapter);
+    mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+    {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+      {
+          Toast.makeText(FaceActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+      }
+
+    });
   }
+
+
 
   private View.OnClickListener mSwitchCameraButtonListener = new View.OnClickListener() {
     public void onClick(View v) {
