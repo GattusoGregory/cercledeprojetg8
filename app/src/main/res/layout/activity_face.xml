@@ -21,12 +21,11 @@
     </com.raywenderlich.facespotter.ui.camera.CameraSourcePreview>
 
     <ImageButton
-        android:id="@+id/flipButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:contentDescription="image"
-        android:src="@drawable/switch_cameras" />
+      android:id="@+id/flipButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentBottom="true"
+      android:src="@drawable/switch_cameras" />
 
 </RelativeLayout>

@@ -308,4 +308,6 @@ public final class FaceActivity extends AppCompatActivity {
     return detector;
   }
 
+
+
 }
