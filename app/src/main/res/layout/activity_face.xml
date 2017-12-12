@@ -1,31 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/topLayout"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:keepScreenOn="true">
 
-    <com.raywenderlich.facespotter.ui.camera.CameraSourcePreview
-      android:id="@+id/preview"
+    <RelativeLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/topLayout"
+      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:keepScreenOn="true">
 
-        <com.raywenderlich.facespotter.ui.camera.GraphicOverlay
-          android:id="@+id/faceOverlay"
+        <com.raywenderlich.facespotter.ui.camera.CameraSourcePreview
+          android:id="@+id/preview"
           android:layout_width="match_parent"
-          android:layout_height="match_parent" />
+          android:layout_height="match_parent">
 
-    </com.raywenderlich.facespotter.ui.camera.CameraSourcePreview>
+            <com.raywenderlich.facespotter.ui.camera.GraphicOverlay
+              android:id="@+id/faceOverlay"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" />
 
-    <ImageButton
-      android:id="@+id/flipButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentBottom="true"
-      android:src="@drawable/switch_cameras" />
+        </com.raywenderlich.facespotter.ui.camera.CameraSourcePreview>
 
-</RelativeLayout>
+        <ImageButton
+          android:id="@+id/flipButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentBottom="true"
+          android:src="@drawable/switch_cameras" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/navList"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#ffeeeeee"/>
+</android.support.v4.widget.DrawerLayout>

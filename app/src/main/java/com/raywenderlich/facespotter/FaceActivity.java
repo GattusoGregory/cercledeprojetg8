@@ -45,7 +45,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -62,7 +64,8 @@ import java.io.IOException;
 
 
 public final class FaceActivity extends AppCompatActivity {
-
+  private ListView mDrawerList;
+  private ArrayAdapter<String> mAdapter;
   private static final String TAG = "FaceActivity";
 
   private static final int RC_HANDLE_GMS = 9001;
@@ -85,6 +88,14 @@ public final class FaceActivity extends AppCompatActivity {
 
     setContentView(R.layout.activity_face);
 
+    // Nav Drawer
+    mDrawerList = (ListView)findViewById(R.id.navList);
+    private void addDrawerItems() {
+      String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
+      mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+      mDrawerList.setAdapter(mAdapter);
+    }
+    //
     mPreview = (CameraSourcePreview) findViewById(R.id.preview);
     mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
     final ImageButton button = (ImageButton) findViewById(R.id.flipButton);
