@@ -93,7 +93,7 @@
                     android:layout_alignBottom="@id/btn_camera_touch"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="6.0dip"
-                    android:text="触屏拍摄"
+                    android:text="Appuyer sur l'écran"
                     android:textColor="@drawable/setting_color_selector"
                     android:textSize="11.0dip" />
             </RelativeLayout>
@@ -119,7 +119,7 @@
                     android:layout_alignBottom="@id/btn_camera_time_lapse"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="6.0dip"
-                    android:text="延时拍摄"
+                    android:text="Timelapse"
                     android:textColor="@drawable/setting_color_selector"
                     android:textSize="11.0dip" />
             </RelativeLayout>
@@ -145,7 +145,7 @@
                     android:layout_alignBottom="@id/btn_camera_light"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="6.0dip"
-                    android:text="闪光灯"
+                    android:text="Flash"
                     android:textColor="@drawable/setting_color_selector"
                     android:textSize="11.0dip" />
             </RelativeLayout>
@@ -171,7 +171,7 @@
                     android:layout_alignBottom="@id/btn_camera_picture_type"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="6.0dip"
-                    android:text="小窗"
+                    android:text="Petite fenêtre"
                     android:textColor="@drawable/setting_color_selector"
                     android:textSize="11.0dip" />
             </RelativeLayout>

@@ -71,7 +71,7 @@
                         android:layout_alignBottom="@id/take"
                         android:layout_centerHorizontal="true"
                         android:paddingTop="5dp"
-                        android:text="相机"
+                        android:text="Appareil photo"
                         android:textColor="#fff"
                         android:textSize="15sp" />
                 </RelativeLayout>
@@ -105,7 +105,7 @@
                         android:layout_alignBottom="@id/collage"
                         android:layout_centerHorizontal="true"
                         android:paddingTop="5dp"
-                        android:text="拼贴"
+                        android:text="Collage"
                         android:textColor="#fff"
                         android:textSize="15sp" />
                 </RelativeLayout>
