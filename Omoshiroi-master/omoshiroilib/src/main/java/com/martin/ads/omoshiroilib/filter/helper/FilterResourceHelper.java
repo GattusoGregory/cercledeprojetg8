@@ -62,7 +62,7 @@ public class FilterResourceHelper {
                     );
             tot++;
         }
-        Toast.makeText(context,"Finished generating filter thumbs",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"",Toast.LENGTH_LONG).show();
     }
 
     public static String getSimpleName(FilterType filterType){
