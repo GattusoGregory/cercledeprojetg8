@@ -326,7 +326,7 @@ public class CameraPreviewActivity extends AppCompatActivity implements GPUImage
                    @Override
                    public void onClickEffectButton() {
                        if(true){
-                           showHint("由于特朗普退出巴黎协定，小窗功能已暂停使用");
+                           showHint("Depuis que Trump s'est retiré du Pacte de Paris, le petit dispositif de fenêtre a été suspendu");
                            return;
                        }
                        cameraPictureTypeBtn.changeState();
@@ -379,7 +379,7 @@ public class CameraPreviewActivity extends AppCompatActivity implements GPUImage
             @Override
             public void onClickEffectButton() {
                 appSettingBtn.setSelected(!appSettingBtn.isSelected());
-                showHint("Apps设置还木有做");
+                showHint("Paramètres");
             }
         });
         cameraFocusView=(ImageView) findViewById(R.id.iv_focus_anim_view);

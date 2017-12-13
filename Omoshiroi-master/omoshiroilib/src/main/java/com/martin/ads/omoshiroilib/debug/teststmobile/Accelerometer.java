@@ -60,7 +60,7 @@ public class Accelerometer {
 	/**
 	 * 
 	 * @param ctx
-	 * 用Activity初始化获得传感器
+	 * Utilisation de l'initialisation d'activité pour obtenir le capteur
 	 */
 	public Accelerometer(Context ctx) {
 		sensorManager = (SensorManager) ctx
@@ -92,7 +92,7 @@ public class Accelerometer {
 	/**
 	 * 
 	 * @return
-	 * 返回当前手机转向
+	 * Retour au tour de téléphone mobile actuel
 	 */
 	static public int getDirection() {
 		return rotation.getValue();

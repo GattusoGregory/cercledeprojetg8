@@ -4,7 +4,7 @@ import android.content.Context;
 
 /**
  * Created by Ads on 2017/1/31.
- * SunnyFilter (晴朗)
+ * SunnyFilter (Ensoleillé)
  */
 
 public class SunnyFilter extends MxOneHashBaseFilter {

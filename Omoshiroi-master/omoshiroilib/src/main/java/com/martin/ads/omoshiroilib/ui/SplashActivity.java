@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
         setLsnForImageView(R.id.collage, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SplashActivity.this,"不存在的~",Toast.LENGTH_LONG).show();
+                Toast.makeText(SplashActivity.this,"N'existe pas",Toast.LENGTH_LONG).show();
             }
         });
     }

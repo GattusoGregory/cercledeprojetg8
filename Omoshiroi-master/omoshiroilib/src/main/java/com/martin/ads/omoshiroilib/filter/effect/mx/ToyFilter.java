@@ -4,7 +4,7 @@ import android.content.Context;
 
 /**
  * Created by Ads on 2017/1/31.
- * ToyFilter (玩具)
+ * ToyFilter (Jouets)
  */
 
 public class ToyFilter extends MxOneHashBaseFilter{

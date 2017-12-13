@@ -135,7 +135,7 @@ public class DecorateActivity extends AppCompatActivity implements TextureView.S
                 saveFile(new Runnable() {
                     @Override
                     public void run() {
-                        TastyToast.makeText(getApplicationContext(), "已保存至SD卡", TastyToast.LENGTH_SHORT,
+                        TastyToast.makeText(getApplicationContext(), "Sauvegardé sur la carte SD", TastyToast.LENGTH_SHORT,
                                 TastyToast.SUCCESS);
                         //Toast.makeText(DecorateActivity.this,"已保存至"+outputFilePath,Toast.LENGTH_LONG).show();
                     }
@@ -167,7 +167,7 @@ public class DecorateActivity extends AppCompatActivity implements TextureView.S
                             intent.setType("video/*");
                         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(outputFilePath)));
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(Intent.createChooser(intent, "分享给朋友"));
+                        startActivity(Intent.createChooser(intent, "Partager"));
                     }
                 });
             }

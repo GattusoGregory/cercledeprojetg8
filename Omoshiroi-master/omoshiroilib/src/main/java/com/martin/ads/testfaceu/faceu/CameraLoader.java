@@ -75,7 +75,7 @@ public class CameraLoader {
     /**
      * 设置缩放比例，里面会按照当前的比例再去缩放
      *
-     * @param factor 缩放比例
+     * @param factor Rapport d'échelle
      */
     public void setZoom(float factor) {
         if (null == mZoomRatios || null == mCamera) {
