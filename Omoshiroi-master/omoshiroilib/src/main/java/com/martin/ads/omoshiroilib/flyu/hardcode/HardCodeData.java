@@ -48,5 +48,6 @@ public class HardCodeData {
         itemList.add(new EffectItem("900317_1_tiger", 3, "900317_1_tiger","tiger"));*/
         /*itemList.add(new EffectItem("zombie01", 1, "zombie01","zombie01"));*/
         itemList.add(new EffectItem("zombie02", 1, "zombie02","zombie02"));
+        itemList.add(new EffectItem("redeye", 1, "redeye","redeye"));
     }
 }
