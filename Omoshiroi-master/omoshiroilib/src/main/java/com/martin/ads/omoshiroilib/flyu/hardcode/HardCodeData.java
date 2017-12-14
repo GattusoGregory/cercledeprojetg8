@@ -36,7 +36,7 @@ public class HardCodeData {
     public static void initHardCodeData(){
         itemList=new ArrayList<>();
         itemList.add(new EffectItem("none", -1, "none","passthrough"));
-        itemList.add(new EffectItem("10012_2", 0, "10012_2","rainbow"));
+        /*itemList.add(new EffectItem("10012_2", 0, "10012_2","rainbow"));
         itemList.add(new EffectItem("50109_2", 1, "50109_2","weisuo / xieyan"));
         itemList.add(new EffectItem("50291_3", 3, "50291_3","fatface"));
         itemList.add(new EffectItem("20088_1_b", 3, "20088_1_b","animal_catfoot_b"));
@@ -45,6 +45,8 @@ public class HardCodeData {
         itemList.add(new EffectItem("170009_2", 2, "170009_2","slim face"));
         itemList.add(new EffectItem("170010_1", 2, "170010_1","mirrorface"));
         itemList.add(new EffectItem("10007_1_sb", 0, "10007_1_sb","shabi"));
-        itemList.add(new EffectItem("900317_1_tiger", 3, "900317_1_tiger","tiger"));
+        itemList.add(new EffectItem("900317_1_tiger", 3, "900317_1_tiger","tiger"));*/
+        /*itemList.add(new EffectItem("zombie01", 1, "zombie01","zombie01"));*/
+        itemList.add(new EffectItem("zombie02", 1, "zombie02","zombie02"));
     }
 }
