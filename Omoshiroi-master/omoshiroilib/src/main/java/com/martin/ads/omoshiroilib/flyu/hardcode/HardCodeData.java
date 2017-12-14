@@ -50,5 +50,6 @@ public class HardCodeData {
         itemList.add(new EffectItem("zombie02", 1, "zombie02","zombie02"));
         itemList.add(new EffectItem("redeye", 1, "redeye","redeye"));
         itemList.add(new EffectItem("monster_eyes", 1, "monster_eyes","monster_eyes"));
+        itemList.add(new EffectItem("pouple", 1, "pouple","pouple"));
     }
 }
